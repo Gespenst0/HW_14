@@ -1,6 +1,5 @@
 import sqlite3
 from flask import jsonify
-import json
 from collections import defaultdict
 
 
@@ -78,26 +77,24 @@ def search_by_genre(genre):
         result = cursor.fetchall()
     return result
 
-def search_by_three_params(type, release_year, genre):
-    con = sqlite3.connect("netflix.db")
-    cur = con.cursor()
-    params = (type, release_year, "%" + genre + "%")
-    sqlite_query = ("select `title`, description "
-                    "FROM netflix "
-                    "WHERE `type` = ? "
-                    "AND `release_year` = ? "
-                    "AND listed_in LIKE ?  "
-                    )
-    cur.execute(sqlite_query, params)
-    result = cur.fetchall()
-    con.close()
+
+def search_by_three_params(type_, release_year, genre):
+    with sqlite3.connect("netflix.db") as connection:
+        cursor = connection.cursor()
+        params = (type_, release_year, "%" + genre + "%")
+        sqlite_query = ("select `title`, description "
+                        "FROM netflix "
+                        "WHERE `type` = ? "
+                        "AND `release_year` = ? "
+                        "AND listed_in LIKE ?  ")
+        cursor.execute(sqlite_query, params)
+        result = cursor.fetchall()
     data_list = []
     for item in result:
         title, description = item
-        result_data = {"title":title, "description":description}
+        result_data = {"title": title, "description": description}
         data_list.append(result_data)
-        a = json.dumps(data_list)
-    return jsonify(a)
+    return jsonify(data_list)
 
 
 def search_by_duo(first_actor, second_actor):
