@@ -1,15 +1,15 @@
 from flask import Flask, jsonify
-import json
 import utils
-app = Flask(__name__)
 
+app = Flask(__name__)
 
 
 @app.route("/movie/<title_name>")
 def movie_title(title_name):
     result = utils.search_by_title(title_name)
     title, country, release_year, listed_in, description = result[0]
-    result_data = {"title":title, "country":country, "release_year":release_year, "genre":listed_in, "description":description}
+    result_data = {"title": title, "country": country,
+                   "release_year": release_year, "genre": listed_in, "description": description}
     return result_data
 
 
@@ -21,8 +21,7 @@ def year_interval(first_year, second_year):
         title, release_year = item
         result_data = {"title": title, "release_year": release_year}
         data_list.append(result_data)
-        a = json.dumps(data_list)
-    return jsonify(a)
+    return jsonify(data_list)
 
 
 @app.route("/rating/<group>")
@@ -33,8 +32,7 @@ def age_group(group):
         title, rating, description = item
         result_data = {"title": title, "rating": rating, "description": description}
         data_list.append(result_data)
-        a = json.dumps(data_list)
-    return jsonify(a)
+    return jsonify(data_list)
 
 
 @app.route("/movie/genre/<genre>")
@@ -43,12 +41,10 @@ def movie_genre(genre):
     data_list = []
     for item in result:
         title, listed_in, description = item
-        result_data = {"title":title, "genre":listed_in, "description":description}
+        result_data = {"title": title, "genre": listed_in, "description": description}
         data_list.append(result_data)
-        a = json.dumps(data_list)
-    return jsonify(a)
+    return jsonify(data_list)
 
 
 if __name__ == '__main__':
     app.run()
-
