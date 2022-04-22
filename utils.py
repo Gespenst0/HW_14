@@ -100,16 +100,15 @@ def search_by_three_params(type_, release_year, genre):
 def search_by_duo(first_actor, second_actor):
     d = defaultdict(int)
     result_list = []
-    con = sqlite3.connect("netflix.db")
-    cur = con.cursor()
-    params = ("%" + first_actor + "%", "%" + second_actor + "%")
-    sqlite_query = ("select `show_id`, `title`, `cast`  "
-                    "FROM netflix "
-                    "WHERE `cast` LIKE ? "
-                    "AND `cast` LIKE ? ")
-    cur.execute(sqlite_query, params)
-    result = cur.fetchall()
-    con.close()
+    with sqlite3.connect("netflix.db") as connection:
+        cur = connection.cursor()
+        params = ("%" + first_actor + "%", "%" + second_actor + "%")
+        sqlite_query = ("select `show_id`, `title`, `cast`  "
+                        "FROM netflix "
+                        "WHERE `cast` LIKE ? "
+                        "AND `cast` LIKE ? ")
+        cur.execute(sqlite_query, params)
+        result = cur.fetchall()
     for item in result:
         cast = item[2]
         actors = (cast.split(", "))
